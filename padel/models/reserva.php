@@ -54,6 +54,24 @@ class Reserva extends Database {
         $rows = $this->db->query($sql);
         return $rows;
     }
+
+    function existeFecha($fecha){
+        $sql = "SELECT COUNT(*) AS count FROM reservas WHERE fecha = '".$fecha."'";
+        $row = $this->db->query($sql)->fetch();
+        if ($row["count"] > 0 ) {
+            $sql2 = "SELECT email_usuario, hora, id_pista FROM reservas WHERE fecha = '".$fecha."' AND activa = 1";
+            $rows = $this->db->query($sql2);
+        }
+        else{
+            $rows = [];
+        }
+        return $rows;
+    }
+
+    function reservarPista($user, $fecha, $hora, $pista){
+        $sql = "INSERT INTO reservas (email_usuario, id_pista, fecha, hora, activa) VALUES('".$user."', $pista, '".$fecha."', '".$hora."', 1)";
+        $this->db->query($sql);
+    }
 }
 
 ?>

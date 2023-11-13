@@ -1,16 +1,73 @@
 <h1>Reservar pista</h1>
 <div class="fecha">
-    <p>Selecciona una fecha: </p><input type="date" name="dateChooser" id="dateChooser" oninput="validateDate()">
+    <p>Selecciona una fecha: </p>
+    <input type="date" name="dateChooser" id="dateChooser" oninput="validateDate()" value="<?php echo isset($_GET['fecha']) ? $_GET['fecha'] : ''; ?>">
 </div>
-<table class="tablaReservar">
-    <tr>
-        <th></th>
-        <th>Pista 1</th>
-        <th>Pista 2</th>
-        <th>Pista 3</th>
-        <th>Pista 4</th>
-        <th>Pista 5</th>
-    </tr>
+<?php
+$usuario = $_SESSION['emailUsuario'];
+if (isset($_SESSION['fecha'])) {
+    $arrayHoras = [];
+    $arrayId_pista = [];
+    $arrayUsuario = [];
+    foreach ($rows as $row) {
+        $arrayUsuario[] = $row['email_usuario'];
+        $arrayHoras[] = $row['hora'];
+        $arrayId_pista[] = $row['id_pista'];
+    }
+    ?>
+    <table class="tablaReservar">
+        <tr>
+            <th></th>
+            <th>Pista 1</th>
+            <th>Pista 2</th>
+            <th>Pista 3</th>
+            <th>Pista 4</th>
+            <th>Pista 5</th>
+        </tr>
+        <?php
+        for ($hora = 9; $hora <= 21; $hora++) {
+            echo "<tr>";
+            $horaValor = sprintf("%02d:00", $hora); // Formatear la hora
+            echo "<td>" . $horaValor . "</td>";
+            
+            // Verificar las coincidencias y aplicar el color rojo
+            for ($pista = 1; $pista <= 5; $pista++) {
+                $coincidencias = array_keys($arrayHoras, $horaValor);
+                $color = 'sin-color';
+                
+                foreach ($coincidencias as $indice) {
+                    if ($arrayId_pista[$indice] == $pista) {
+                        if ($arrayUsuario[$indice] == $usuario) {
+                            $color = 'azul';
+                        } else {
+                            $color = 'rojo';
+                        }
+                    }
+                }
+                if (in_array($pista, $pistaM)) {
+                    $color = 'amarillo';
+                }
+
+                echo '<td class="' . $color . '"></td>';
+            }
+
+            echo "</tr>";
+        }
+        ?>
+    </table>
+    <?php
+}
+
+else{?>
+    <table class="tablaReservar">
+        <tr>
+            <th></th>
+            <th>Pista 1</th>
+            <th>Pista 2</th>
+            <th>Pista 3</th>
+            <th>Pista 4</th>
+            <th>Pista 5</th>
+        </tr>
     <?php
         for ($hora = 9; $hora <= 21; $hora++) {
             echo "<tr>";
@@ -18,7 +75,10 @@
             echo "</tr>";
         }
     ?>
-</table>
+    </table>
+<?php
+}
+?>
 <div class="colores">
     <div class="cuadro rojo"></div>
     <p>Ocupada</p>
@@ -34,45 +94,43 @@
 <script>
     // Obtener la fecha actual
     var currentDate = new Date();
-    // Establecer la fecha mínima (actual)
-    var minDate = currentDate.toISOString().split('T')[0];
+    // Crear una nueva fecha como copia de la fecha actual
+    var minDate = new Date(currentDate);
+    // Restar un día a la fecha mínima
+    minDate.setDate(currentDate.getDate() - 1);
+    // Formatear la fecha mínima como cadena en formato YYYY-MM-DD
+    minDate = minDate.toISOString().split('T')[0];
+    // Establecer el atributo 'min' del elemento con ID 'dateChooser' con la fecha mínima
     document.getElementById('dateChooser').min = minDate;
+    
     var maxDate = new Date(currentDate);
     maxDate.setDate(currentDate.getDate() + 7);
-
-    // Establecer la fecha máxima en el formato YYYY-MM-DD
     var maxDateFormatted = maxDate.toISOString().split('T')[0];
     document.getElementById('dateChooser').max = maxDateFormatted;
+
     function validateDate() {
         var selectedDate = new Date(document.getElementById('dateChooser').value);
-        var currentDate = new Date();
-        var maxDate = new Date(currentDate);
-        maxDate.setDate(currentDate.getDate() + 7);
-
-        if (selectedDate < currentDate || selectedDate > maxDate ) {
+        if (selectedDate < currentDate || selectedDate > maxDate) {
             alert('Selecciona una fecha válida dentro del rango permitido.');
             document.getElementById('dateChooser').value = ''; // Limpiar la fecha si es inválida
         }
-        else if(selectedDate > currentDate && selectedDate < maxDate){
+        else if(selectedDate >= currentDate && selectedDate < maxDate){// 
             var fecha = selectedDate.toISOString().split('T')[0];
-            // Realizar una solicitud POST al controlador
-            fetch('appController.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ fecha: fecha }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Manejar la respuesta del servidor si es necesario
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error al realizar la solicitud:', error);
-            });
+            window.location.href='index.php?controller=app&action=buscarFecha&fecha='+fecha;
         }
     }
+
+    //Clicar en la celda para reservar
+    var celdaSeleccionada = document.getElementsByClassName("sin-color");
+    var fecha = document.getElementById("dateChooser").value;
+    for (var i = 0; i < celdaSeleccionada.length; i++) {
+        celdaSeleccionada[i].addEventListener("click", function() {
+        var pistaS = this.cellIndex;
+        var horaS = this.parentNode.firstChild.textContent;
+        window.location.href='index.php?controller=app&action=reservar&hora='+horaS+'&pista='+pistaS+'&fecha='+fecha;
+    });
+}
+    
 </script>
 <style>
     .tablaReservar {
@@ -94,10 +152,6 @@
 
     .tablaReservar tr:nth-child(even) {
         background-color: #f2f2f2;
-    }
-
-    .tablaReservar tr:hover {
-        background-color: #ddd;
     }
 
     /* Estilos para colores */
@@ -129,6 +183,10 @@
 
     .colores p {
         margin: 0;
+    }
+
+    .tablaReservar td.sin-color {
+        cursor: pointer;
     }
 
 </style>
