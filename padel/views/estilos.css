@@ -1,0 +1,160 @@
+/* --------- Menu --------------------  */
+@media (max-width: 800px) {
+    body{
+        margin: 0;
+    }
+    *{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    header {
+        display: flex; /* Utilizar el modelo de caja flexible */
+        align-items: center;
+        padding: 30px 5px;
+        border-bottom: 3px solid black;
+        background-color: rgba(51,128,210);
+    }
+    
+    header img {
+        width: 100px;
+        height: 100px;
+    
+    }
+    
+    header h1 {
+        margin-left: 20px;
+    }
+    
+    .divForm{
+        margin: 0;
+        text-align: center;
+    }
+    /* ------------------------------------------------- */
+    .divForm{
+        padding: 0;
+        margin: 80px 0;
+        box-sizing: border-box;
+    }
+
+    form{
+        height: 450px;
+        width: 350px;
+        background-color: rgba(51,128,210);
+        position: absolute;
+        transform: translate(-50%,-50%);
+        top: 50%;
+        left: 50%;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,255,255,0.1);
+        box-shadow: 0 0 40px rgba(8,7,16,0.6);
+        margin: 80px auto;
+    }
+    form *{
+        font-family: 'Poppins',sans-serif;
+        color: #ffffff;
+        letter-spacing: 0.5px;
+        outline: none;
+        border: none;
+    }
+    form h3{
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 42px;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    input{
+        display: block;
+        height: 50px;
+        width: 90%;
+        background-color: rgba(255,255,255,0.07);
+        border-radius: 5px;
+        padding: 0 5px;
+        margin: 5px auto;
+        font-size: 14px;
+        font-weight: 300;
+    }
+    ::placeholder{
+        color: #e5e5e5;
+    }
+    .button{
+        margin-top: 50px;
+        width: 90%;
+        background-color: #ffffff;
+        color: #080710;
+        padding: 15px 0;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    /* -------------------------------------------- */
+    .divMenu h4{
+        text-align: center;
+        font-size: 40px;
+    }
+    .divMenu p{
+        background-color: rgba(51,128,210);
+        padding: 50px;
+        margin: 20px auto;
+        width: 60%;
+        text-align: center;
+        font-size: 20px;
+    }
+    .divMenu p a{
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+    }
+
+    /* -------------------------------- */
+    .divMenu h4{
+        text-align: center;
+    }
+    .imgUsuario{
+        border-radius: 500px;
+    }
+    .datosUsuario{
+        width: 100%;
+        padding: 20px;
+        margin: 30px auto;
+    }
+    .datosUsuario th{
+        float: left;
+    }
+    .divImg{
+        margin: 50px auto;
+        width: max-content;
+    }
+
+    /* ----------------------------- */
+    .button-7 {
+        display: block;
+        background-color: rgba(51,128,210);
+        border: 1px solid transparent;
+        border-radius: 5px;
+        box-shadow: rgba(255, 255, 255, .4) 0 1px 0 0 inset;
+        color: #fff;
+        font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.15385;
+        padding: 8px .8em;
+        width: 30%;
+        text-align: center;
+        text-decoration: none;
+        margin-bottom: 10px;
+        margin-left: 5px;
+    }
+    footer{
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    .fecha p{
+        margin-left: 20px;
+    }
+    .fecha input{
+        background-color: rgb(221, 220, 220);
+    }
+}
