@@ -92,45 +92,44 @@ else{?>
     <a href="index.php?controller=app&action=salir" class="button-7">Cerrar sesión</a>
 </footer>
 <script>
-    // Obtener la fecha actual
+    // Función para formatear la fecha como YYYY-MM-DD
+    function formatDate(date) {
+        return new Date(date).toISOString().split('T')[0];
+    }
+
     var currentDate = new Date();
-    // Crear una nueva fecha como copia de la fecha actual
     var minDate = new Date(currentDate);
-    // Restar un día a la fecha mínima
     minDate.setDate(currentDate.getDate() - 1);
-    // Formatear la fecha mínima como cadena en formato YYYY-MM-DD
-    minDate = minDate.toISOString().split('T')[0];
-    // Establecer el atributo 'min' del elemento con ID 'dateChooser' con la fecha mínima
-    document.getElementById('dateChooser').min = minDate;
-    
+    document.getElementById('dateChooser').min = formatDate(minDate);
+    var minFecha = formatDate(minDate);
+    var fechaHoy = formatDate(currentDate);
     var maxDate = new Date(currentDate);
     maxDate.setDate(currentDate.getDate() + 7);
-    var maxDateFormatted = maxDate.toISOString().split('T')[0];
-    document.getElementById('dateChooser').max = maxDateFormatted;
+    document.getElementById('dateChooser').max = formatDate(maxDate);
+    var maxFecha = formatDate(maxDate);
 
     function validateDate() {
-        var selectedDate = new Date(document.getElementById('dateChooser').value);
-        if (selectedDate < currentDate || selectedDate > maxDate) {
+        var dateInput = document.getElementById('dateChooser');
+        var selectedDate = new Date(dateInput.value);
+        var fechaSeleccionada = formatDate(selectedDate);
+
+        if (fechaSeleccionada >= fechaHoy && fechaSeleccionada <= maxFecha) {
+            window.location.href = 'index.php?controller=app&action=buscarFecha&fecha=' + fechaSeleccionada;
+        } else {
             alert('Selecciona una fecha válida dentro del rango permitido.');
             document.getElementById('dateChooser').value = ''; // Limpiar la fecha si es inválida
         }
-        else if(selectedDate >= currentDate && selectedDate < maxDate){// 
-            var fecha = selectedDate.toISOString().split('T')[0];
-            window.location.href='index.php?controller=app&action=buscarFecha&fecha='+fecha;
-        }
     }
-
     //Clicar en la celda para reservar
     var celdaSeleccionada = document.getElementsByClassName("sin-color");
     var fecha = document.getElementById("dateChooser").value;
     for (var i = 0; i < celdaSeleccionada.length; i++) {
         celdaSeleccionada[i].addEventListener("click", function() {
-        var pistaS = this.cellIndex;
-        var horaS = this.parentNode.firstChild.textContent;
-        window.location.href='index.php?controller=app&action=reservar&hora='+horaS+'&pista='+pistaS+'&fecha='+fecha;
-    });
-}
-    
+            var pistaS = this.cellIndex;
+            var horaS = this.parentNode.firstChild.textContent;
+            window.location.href='index.php?controller=app&action=reservar&hora='+horaS+'&pista='+pistaS+'&fecha='+fecha;
+        });
+    }    
 </script>
 <style>
     .tablaReservar {

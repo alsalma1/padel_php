@@ -10,13 +10,14 @@
 
     <?php
     foreach($rows as $row){
+        $id = $row['id_reserva'];
         ?>
         <tr>
             <td><?php echo $row['id_reserva']?></td>
             <td><?php echo $row['fecha']?></td>
             <td><?php echo $row['hora']?></td>
             <td><?php echo $row['id_pista']?></td>
-            <td><a href=""><img src="../resources/eliminar.png" alt=""></a></td>
+            <td><a href="index.php?controller=app&action=eliminarReserva&id=<?php echo $id ?>"><img src="pictures/eliminar.png" alt=""></a></td>
         </tr>
         <?php
     }
