@@ -1,5 +1,11 @@
 <?php
-require_once 'config/database.php';
+if(isset($SESSION['eliminar'])){
+    require_once '../../config/database.php';
+}
+else{
+    require_once 'config/database.php';
+}
+
 class Reserva extends Database {
     private $id_reserva;
     private $email_usuario;
@@ -50,7 +56,7 @@ class Reserva extends Database {
 
     //Metodos:
     function reservasUsuarioLogeado(){
-        $sql = "SELECT * FROM reservas WHERE email_usuario = '".$_SESSION['emailUsuario']."'";
+        $sql = "SELECT * FROM reservas WHERE email_usuario = '".$_SESSION['emailUsuario']."' AND activa = 1";
         $rows = $this->db->query($sql);
         return $rows;
     }
@@ -71,6 +77,24 @@ class Reserva extends Database {
     function reservarPista($user, $fecha, $hora, $pista){
         $sql = "INSERT INTO reservas (email_usuario, id_pista, fecha, hora, activa) VALUES('".$user."', $pista, '".$fecha."', '".$hora."', 1)";
         $this->db->query($sql);
+    }
+
+    function comprobarReserva($hora, $fecha, $pista, $user){
+        $sql = "SELECT * FROM reservas WHERE email_usuario = '".$user."' AND fecha ='" .$fecha."' AND hora = '".$hora."' AND id_pista != $pista";
+        $ejecutar = $this->db->query($sql);
+        $filas = $ejecutar->rowCount();
+        if ($filas==0){
+            $existe = false;
+        }
+        else{
+            $existe= true;
+        }
+        return $existe;
+    }
+
+    function eliminarReserva($id_reserva){
+        $sql = "UPDATE reservas SET activa = 0 WHERE id_reserva = ".$id_reserva;
+        $ejecutar = $this->db->query($sql);
     }
 }
 

@@ -2,6 +2,10 @@
 require_once "models/usuario.php";
 require_once "models/reserva.php";
 require_once "models/pista.php";
+require_once 'vendor/autoload.php';
+// Cargar la clase de PHPMailer
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 class AppController{
     public function menu(){
         require_once "views/menu.php";
@@ -80,24 +84,60 @@ class AppController{
     
     public function reservar(){
         if(isset($_GET)){
+            $fechaActual = date("Y-m-d");
+            $horaActual = date("H:i");
             $reserva = new Reserva();
             $user = $_SESSION['emailUsuario'];
             $fecha = $_GET['fecha'];
             $hora = $_GET['hora'];
             $pista = $_GET['pista'];
             //Comprobar si el ususario tiene una reserva el mismo dia y hora pero diferentes pista
-
-            //Comprobar si la hora no es anterior a la hora actual si la fecha es de hoy
-            $reserva->reservarPista($user, $fecha, $hora, $pista);  
-            $date = new DateTime($fecha);
-            $fechaFormateada = $date->format('d-m-Y'); 
-
+            $reserva->comprobarReserva($hora, $fecha, $pista, $user);
+            if($reserva->comprobarReserva($hora, $fecha, $pista, $user)){
+                $mensaje = "No puedes reservar diferentes pistas en la misma hora y fecha!";
+            }
+            //No le deja reservar en una hora anterior a la actual cuando es el mismo dia
+            else if($fecha == $fechaActual && $hora < $horaActual){
+                $mensaje = "No puedes reservar en una hora que ya ha pasado!";
+            }
+            else{
+                $reserva->reservarPista($user, $fecha, $hora, $pista);  
+                $date = new DateTime($fecha);
+                $fechaFormateada = $date->format('d-m-Y'); 
+                $mensaje = "Has reservado la pista $pista el día $fechaFormateada a las $hora ";
+            }
             echo '<script>';
-            echo 'alert("Has reservado la pista ' . $pista . ' el día ' . $fechaFormateada . ' a las ' . $hora . '");';
+            echo 'alert("' . $mensaje . '");';
             echo 'window.location.href = "index.php?controller=app&action=buscarFecha&fecha=' . $fecha . '";';
             echo '</script>';
             exit();
         }
+    }    
+
+    public function eliminarReserva(){
+        $reserva = new Reserva();
+        $id_reserva = $_GET['id'];
+        ?>
+        <script>
+            var confirmM = confirm("¿Estás seguro de que quieres eliminar esta reserva?");
+            if (confirmM) {
+                // Utilizando AJAX para hacer una solicitud al servidor sin recargar la página
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        // Manejar la respuesta del servidor si es necesario
+                        console.log(this.responseText);
+                        //window.location.href = "index.php?controller=app&action=reservasUsuario";
+                    }
+                };
+                xmlhttp.open("GET", "views/eliminarReserva.php?id=<?php echo $id_reserva ?>", true);
+                xmlhttp.send();
+            } else {
+                window.location.href = "index.php?controller=app&action=reservasUsuario";
+            }
+        </script>
+
+        <?php
     }
 }
 ?>
