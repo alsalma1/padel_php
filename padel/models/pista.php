@@ -24,9 +24,14 @@ class Pista extends Database{
 
     //Metodos
     function pistasEnMantenimineto(){
-        $sql = "SELECT id_pista FROM pistas WHERE estado = 'Mantenimiento'";
+        $sql = "SELECT id_pista, fecha_inicio, fecha_fin, estado_pista FROM estado_pistas WHERE estado_pista = 'Mantenimiento'";
         $result = $this->db->query($sql);
+            
+        $query = "UPDATE reservas JOIN estado_pistas ON reservas.id_pista = estado_pistas.id_pista SET activa = 0 WHERE estado_pista = 'Mantenimiento'";
+        $this->db->query($query);
+        //var_dump($pistasMantenimiento);
         return $result;
     }
+    
 }
 ?>

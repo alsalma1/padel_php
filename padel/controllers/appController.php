@@ -43,6 +43,7 @@ class AppController{
     }
     
     public function reservasUsuario(){
+        $fechaActual = date('Y-m-d');
         $reserva = new Reserva();
         $rows = $reserva->reservasUsuarioLogeado();
         require_once "views/misReservas.php";
@@ -69,7 +70,7 @@ class AppController{
         }
         return $pistasEnMantenimiento;
     }
-
+    
     public function buscarFecha(){
         $reserva = new Reserva();
         if(isset($_GET['fecha'])){
@@ -115,29 +116,22 @@ class AppController{
     }    
 
     public function eliminarReserva(){
+        $fechaActual = date("Y-m-d");
         $reserva = new Reserva();
         $id_reserva = $_GET['id'];
-        ?>
-        <script>
-            var confirmM = confirm("¿Estás seguro de que quieres eliminar esta reserva?");
-            if (confirmM) {
-                // Utilizando AJAX para hacer una solicitud al servidor sin recargar la página
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        // Manejar la respuesta del servidor si es necesario
-                        console.log(this.responseText);
-                        //window.location.href = "index.php?controller=app&action=reservasUsuario";
-                    }
-                };
-                xmlhttp.open("GET", "views/eliminarReserva.php?id=<?php echo $id_reserva ?>", true);
-                xmlhttp.send();
-            } else {
-                window.location.href = "index.php?controller=app&action=reservasUsuario";
-            }
-        </script>
+        $fecha = $_GET['fecha'];
+        $reserva = new Reserva();
 
-        <?php
+        $timestamp1 = strtotime($fechaActual);
+        $timestamp2 = strtotime($fecha);
+
+        if($timestamp1 == $timestamp2){
+            echo "<script>alert('No se puede eliminar la reserva al mismo dia!');window.location.href = 'index.php?controller=app&action=reservasUsuario';</script>";
+        }else{
+            $reserva->eliminarReserva($id_reserva);
+            echo "<script>alert('Tu reserva se eliminó correctamente');window.location.href = 'index.php?controller=app&action=reservasUsuario';</script>";
+        }
+
     }
 }
 ?>

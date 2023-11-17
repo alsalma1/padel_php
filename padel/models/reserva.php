@@ -1,5 +1,5 @@
 <?php
-if(isset($SESSION['eliminar'])){
+if(isset($_SESSION['eliminar'])){
     require_once '../../config/database.php';
 }
 else{
@@ -56,7 +56,8 @@ class Reserva extends Database {
 
     //Metodos:
     function reservasUsuarioLogeado(){
-        $sql = "SELECT * FROM reservas WHERE email_usuario = '".$_SESSION['emailUsuario']."' AND activa = 1";
+        $fechaActual = date('Y-m-d');
+        $sql = "SELECT * FROM reservas WHERE email_usuario = '".$_SESSION['emailUsuario']."' AND activa = 1 AND '$fechaActual' <= fecha ";
         $rows = $this->db->query($sql);
         return $rows;
     }
@@ -80,7 +81,7 @@ class Reserva extends Database {
     }
 
     function comprobarReserva($hora, $fecha, $pista, $user){
-        $sql = "SELECT * FROM reservas WHERE email_usuario = '".$user."' AND fecha ='" .$fecha."' AND hora = '".$hora."' AND id_pista != $pista";
+        $sql = "SELECT * FROM reservas WHERE email_usuario = '".$user."' AND fecha ='" .$fecha."' AND hora = '".$hora."' AND id_pista != $pista AND activa = 1";
         $ejecutar = $this->db->query($sql);
         $filas = $ejecutar->rowCount();
         if ($filas==0){
