@@ -188,4 +188,22 @@ else{?>
         cursor: pointer;
     }
 
+    .button-7 {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #3498db;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 0 4px #2980b9;
+    }
+
+    .button-7:hover {
+        background-color: #2980b9;
+    }
 </style>
